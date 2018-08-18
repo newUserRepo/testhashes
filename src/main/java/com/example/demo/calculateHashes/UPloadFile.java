@@ -1,52 +1,46 @@
 package com.example.demo.calculateHashes;
 
 import com.example.demo.MyUI;
-import com.example.demo.util.Hora;
-import com.vaadin.shared.ui.ContentMode;
-import com.vaadin.spring.annotation.SpringComponent;
+import com.example.demo.calculateHashes.processAsync.ProcessAsync;
+import com.example.demo.calculateHashes.processAsync.ProcessAsyncTask;
+import com.example.demo.calculateHashes.upload.UploadService;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringUI
-public class UPloadService extends VerticalLayout implements Upload.Receiver,Upload.ProgressListener,Upload.SucceededListener {
+public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload.ProgressListener,Upload.SucceededListener {
 
     private final MyUI ui;
+    private ProgressBar progressBar;
+    private final Button btnInterrupt;
     private Path path;
     private TextField txtPath = new TextField();
-    private ProgressBar progressBar;
-    private String hash = "";
+    private List<String> hashes;
     private Panel panel = new Panel();
-    private Label labelResul = new Label();
     private Label labelHour = new Label();
-    private final Button btnInterrupt;
     private Upload upload;
     private CssLayout row = new CssLayout();
+    private final UploadService uploadService;
 
-
-    public UPloadService(final MyUI ui , final ProgressBar bar, final Button btnInterrupt , boolean value) {
-        this.ui = ui;
-        this.progressBar = bar;
-        this.btnInterrupt = btnInterrupt;
+    public UPloadFile(final UploadService uploadFileClass) {
+        this.uploadService = uploadFileClass;
+        this.ui = uploadFileClass.getUi();
+        this.progressBar = uploadFileClass.getProgressBar();
+        this.btnInterrupt = uploadFileClass.getBtnInterrupt();
         setMargin(false);
         upload = new Upload(null , this );
-        upload.setEnabled(value);
+        upload.setEnabled(false);
         upload.addProgressListener(this);
         upload.addSucceededListener(this);
         upload.setButtonCaption("...");
@@ -55,6 +49,12 @@ public class UPloadService extends VerticalLayout implements Upload.Receiver,Upl
         addComponents(row_);
     }
 
+    public void setHashes(final List<String> hashes) {
+        this.hashes = hashes;
+    }
+    public void setEnabledButton(final boolean value) {
+        upload.setEnabled(value);
+    }
     private Component getRow() {
         row.setWidth("100%");
         txtPath.setPlaceholder("filename");
@@ -64,8 +64,6 @@ public class UPloadService extends VerticalLayout implements Upload.Receiver,Upl
         row.addStyleName("css-space-2");
         return row;
     }
-
-
 
     @Override
     public void updateProgress(long readBytes, long contentLength) {
@@ -90,7 +88,15 @@ public class UPloadService extends VerticalLayout implements Upload.Receiver,Upl
     public void uploadSucceeded(Upload.SucceededEvent event) {
         progressBar.setValue(0.0f);
 
-        run(() -> new ProcessAsync().processAsyncTask(path, progressBar, labelResul, hash) , "com.example.demo.calculateHashes.Hash ready!!!");
+        final ProcessAsync processAsync = new ProcessAsync.Builder()
+                .setPath(path)
+                .setProgressBar(progressBar)
+                .setLabelResult(uploadService.getRichTextArea())
+                .setHashes(hashes)
+                .build();
+        final ProcessAsyncTask processAsyncTask = new ProcessAsyncTask();
+
+        run(() -> processAsyncTask.calculateHashAsync(processAsync) , "Hash ready!!!");
 
     }
 
