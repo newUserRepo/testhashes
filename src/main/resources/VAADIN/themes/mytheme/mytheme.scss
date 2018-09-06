@@ -34,11 +34,6 @@
 @mixin mytheme {
   @include valo;
 
-
-  .v-ui > .v-widget {
-     overflow: visible;
-  }
-
   .v-progressbar-wrapper {
      height: 37px !important;
      border-radius: 0px;

@@ -11,6 +11,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.vaadin.teemu.switchui.Switch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,9 @@ public class MainLayout extends VerticalLayout {
     private Label labelHora;
     private boolean value;
 
-    private CheckIpExternal checkIpExternal = new CheckIpExternal();
     private Label labelIPExternal = new Label();
     private List<String> hashes;
+    private Switch s = new Switch();
 
     public MainLayout(final MyUI ui, final Hora hora) {
 
@@ -62,7 +63,7 @@ public class MainLayout extends VerticalLayout {
         labelHora = new Label("Hora Servidor: " + hora.getHour());
         labelHora.addStyleName("colored");
         labelIPExternal.addStyleName("colored");
-        checkIpExternal.checkIP().whenCompleteAsync((string, error) -> {
+        CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
            ui.access(() -> labelIPExternal.setValue("Ip: " + string));
         });
 
@@ -102,7 +103,8 @@ public class MainLayout extends VerticalLayout {
             up.setHashes(hashes);
         });
 
-        verticalLayoutMenu.addComponents(checkBoxGroup, labelVersion);
+        verticalLayoutMenu.addComponents(checkBoxGroup,s, labelVersion);
+        verticalLayoutMenu.setComponentAlignment(s, Alignment.TOP_CENTER);
         verticalLayoutMenu.setComponentAlignment(labelVersion, Alignment.BOTTOM_CENTER);
         verticalLayoutMenu.setExpandRatio(labelVersion, 1);
 
