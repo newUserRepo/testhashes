@@ -4,6 +4,7 @@ import com.example.demo.MyUI;
 import com.example.demo.calculateHashes.Hash;
 import com.example.demo.calculateHashes.UPloadFile;
 import com.example.demo.calculateHashes.upload.UploadService;
+import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -32,6 +33,8 @@ public class MainLayout extends VerticalLayout {
     private Label labelHora;
     private boolean value;
 
+    private CheckIpExternal checkIpExternal = new CheckIpExternal();
+    private Label labelIPExternal = new Label();
     private List<String> hashes;
 
     public MainLayout(final MyUI ui, final Hora hora) {
@@ -57,9 +60,16 @@ public class MainLayout extends VerticalLayout {
         label.setValue("Calculate Hashes...");
 
         labelHora = new Label("Hora Servidor: " + hora.getHour());
-        final HorizontalLayout horizontalLayoutHeader = new HorizontalLayout(label, labelHora);
+        labelHora.addStyleName("colored");
+        labelIPExternal.addStyleName("colored");
+        checkIpExternal.checkIP().whenCompleteAsync((string, error) -> {
+           ui.access(() -> labelIPExternal.setValue("Ip: " + string));
+        });
+
+        final HorizontalLayout rowRigth = new HorizontalLayout(labelIPExternal,labelHora);
+        final HorizontalLayout horizontalLayoutHeader = new HorizontalLayout(label, rowRigth);
         horizontalLayoutHeader.setWidth("100%");
-        horizontalLayoutHeader.setComponentAlignment(labelHora, Alignment.MIDDLE_RIGHT);
+        horizontalLayoutHeader.setComponentAlignment(rowRigth, Alignment.MIDDLE_RIGHT);
 
         return horizontalLayoutHeader;
     }
