@@ -65,7 +65,9 @@ public class MainLayout extends VerticalLayout {
     }
 
     private void getHour(final String hora) {
-        ui.access(() -> labelHora.setValue(hora));
+
+        if(ui.isAttached())
+            ui.access(() -> labelHora.setValue(hora));
     }
 
     private Component getMenu() {
@@ -158,7 +160,7 @@ public class MainLayout extends VerticalLayout {
         //para este caso amerita hacer dicho pattern
         grid.setSizeFull();
         grid.addColumn(Hash::getFilename).setCaption("File Name").setId("name");
-        grid.addColumn(Hash::getHashtype).setCaption(".Hash Type").setId("type");
+        grid.addColumn(Hash::getHashtype).setCaption("Hash Type").setId("type");
         grid.addColumn(Hash::getHashresult).setCaption("Hash Result").setId("result");
         grid.addColumn(Hash::getLength).setCaption("Length").setId("length");
         grid.addColumn(Hash::getTime).setCaption("Time").setId("time");
