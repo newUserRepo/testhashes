@@ -1,5 +1,6 @@
 package com.example.demo.calculateHashes.processAsync;
 
+import com.example.demo.util.TimeCount;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.RichTextArea;
@@ -13,11 +14,13 @@ public final class ProcessAsync {
     private final ProgressBar progressBar;
     private final RichTextArea richTextArea;
     private final List<String> hashes;
+    private final TimeCount timeCount;
 
     private ProcessAsync(final Builder builder) {
         this.path = builder.path;
         this.progressBar = builder.progressBar;
         this.richTextArea = builder.richTextArea;
+        this.timeCount = builder.timeCount;
         if(builder.hashes == null) {
             throw new RuntimeException("Hashes it`s required");
         }
@@ -40,6 +43,8 @@ public final class ProcessAsync {
         return hashes;
     }
 
+    public TimeCount getTimeCount() {return timeCount;}
+
     @Override
     public String toString() {
         return "ProcessAsync{" +
@@ -55,6 +60,7 @@ public final class ProcessAsync {
         private ProgressBar progressBar;
         private RichTextArea richTextArea;
         private List<String> hashes;
+        private TimeCount timeCount;
 
         public Builder setPath(final Path path) {
             this.path = path;
@@ -72,7 +78,10 @@ public final class ProcessAsync {
             this.hashes = hashes;
             return this;
         }
-
+        public Builder setTimeCount(final TimeCount timeCount) {
+            this.timeCount = timeCount;
+            return this;
+        }
         public ProcessAsync build() {
             return new ProcessAsync(this);
         }

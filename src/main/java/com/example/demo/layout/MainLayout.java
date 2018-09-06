@@ -59,6 +59,7 @@ public class MainLayout extends VerticalLayout {
         labelHora = new Label("Hora Servidor: " + hora.getHour());
         final HorizontalLayout horizontalLayoutHeader = new HorizontalLayout(label, labelHora);
         horizontalLayoutHeader.setWidth("100%");
+        horizontalLayoutHeader.setComponentAlignment(labelHora, Alignment.MIDDLE_RIGHT);
 
         return horizontalLayoutHeader;
     }

@@ -35,6 +35,7 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
     private void readFileAsync(final ProcessAsync process) {
         for(int f=0; f<= process.getHashes().size(); f++) {
             try (final BufferedInputStream input = new BufferedInputStream(Files.newInputStream(process.getPath()))) {
+                process.getTimeCount().init();
                 final MessageDigest messageDigest = MessageDigest.getInstance(process.getHashes().get(f));
                 int dataRead = 0;
                 long sum = 0L;
@@ -50,6 +51,8 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
                 for (int c = 0; c < bytesDigest.length; c++) {
                     SB.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1));
                 }
+                process.getTimeCount().endTime();
+                final String totalTime = "sec " + process.getTimeCount().getTimeSec() + " min" + process.getTimeCount().getTimeMillis();
                 final String resultHash = SB.toString().toUpperCase();
                 //labelResult.setValue("");
                 ShowData.println(messageDigest.getAlgorithm() + ": " + resultHash + "\n");

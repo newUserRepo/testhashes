@@ -4,6 +4,7 @@ import com.example.demo.MyUI;
 import com.example.demo.calculateHashes.processAsync.ProcessAsync;
 import com.example.demo.calculateHashes.processAsync.ProcessAsyncTask;
 import com.example.demo.calculateHashes.upload.UploadService;
+import com.example.demo.util.TimeCount;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -26,6 +27,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
     private final Button btnInterrupt;
     private Path path;
     private TextField txtPath = new TextField();
+    private TimeCount timeCount = new TimeCount();
     private List<String> hashes;
     private Panel panel = new Panel();
     private Label labelHour = new Label();
@@ -90,9 +92,10 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
 
         final ProcessAsync processAsync = new ProcessAsync.Builder()
                 .setPath(path)
-                .setProgressBar(progressBar)
+                .setProgressBar(uploadService.getProgressBar())
                 .setLabelResult(uploadService.getRichTextArea())
                 .setHashes(hashes)
+                .setTimeCount(timeCount)
                 .build();
         final ProcessAsyncTask processAsyncTask = new ProcessAsyncTask();
 
