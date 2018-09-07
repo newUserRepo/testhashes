@@ -114,7 +114,7 @@
                          / CDN only). The allowed values are "local", "fetch"
                          and "cdn".
                     -->
-					<widgetsetMode>cdn</widgetsetMode>
+					<widgetsetMode>local</widgetsetMode>
 				</configuration>
 			</plugin>
 

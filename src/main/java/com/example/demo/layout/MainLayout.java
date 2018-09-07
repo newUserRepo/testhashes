@@ -8,16 +8,18 @@ import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.teemu.switchui.Switch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MainLayout extends VerticalLayout {
+public class MainLayout extends VerticalLayout implements View {
 
     private final MyUI ui;
     private VerticalLayout verticalLayoutMenu = new VerticalLayout();
@@ -30,7 +32,10 @@ public class MainLayout extends VerticalLayout {
     private CheckBoxGroup<String> checkBoxGroup = new CheckBoxGroup<String>();
     private static final String HASHES[] = {"MD5", "SHA1", "SHA-256", "SHA-384", "SHA-512"};
     private final Button buttonDeleteFile = new Button();
-    private final Hora hora;
+
+
+    private Hora hora;
+
     private Label labelHora;
     private boolean value;
 
@@ -39,10 +44,8 @@ public class MainLayout extends VerticalLayout {
     private Switch s = new Switch();
 
     public MainLayout(final MyUI ui, final Hora hora) {
-
         this.ui = ui;
         this.hora = hora;
-        hora.setHour(this::getHour);
 
         setSizeFull();
 
@@ -60,11 +63,22 @@ public class MainLayout extends VerticalLayout {
         label.addStyleName("bold");
         label.setValue("Calculate Hashes...");
 
+        hora.setHour(this::getHour);
         labelHora = new Label("Hora Servidor: " + hora.getHour());
+
+        //labelHora = new Label("Hora Servidor: ");
         labelHora.addStyleName("colored");
         labelIPExternal.addStyleName("colored");
         CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
-           ui.access(() -> labelIPExternal.setValue("Ip: " + string));
+           ui.access(() -> {
+               if(!string.equals("Error")) {
+                   labelIPExternal.addStyleName(ValoTheme.LABEL_SUCCESS);
+                   labelIPExternal.setValue("Ip: " + string);
+               }else {
+                   labelIPExternal.addStyleName(ValoTheme.LABEL_FAILURE);
+                   labelIPExternal.setValue("Ip: " + string);
+               }
+           });
         });
 
         final HorizontalLayout rowRigth = new HorizontalLayout(labelIPExternal,labelHora);
