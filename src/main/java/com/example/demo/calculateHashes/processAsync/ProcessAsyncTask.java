@@ -1,6 +1,9 @@
 package com.example.demo.calculateHashes.processAsync;
 
+import com.example.demo.calculateHashes.HashBuilder;
+import com.example.demo.calculateHashes.createGridTransactions.GridTransactions;
 import com.example.demo.util.ShowData;
+import com.example.demo.util.TypesFields;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +14,7 @@ import java.util.stream.Stream;
 //how to apply pattern builder here!!!
 //view OCP design patterns
 public class ProcessAsyncTask implements ProcessAsyncInterface {
+
 
     private StringBuilder SB = new StringBuilder();
 
@@ -45,16 +49,33 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
                     messageDigest.update(bytes, 0, dataRead);
                     sum += dataRead;
                     final Float percent = (sum / (float) length);
-                    process.getProgressBar().setValue(percent);
+                    process.getBar().setValue(percent);
                 }
                 final byte[] bytesDigest = messageDigest.digest();
                 for (int c = 0; c < bytesDigest.length; c++) {
                     SB.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1));
                 }
                 process.getTimeCount().endTime();
-                final String totalTime = "sec " + process.getTimeCount().getTimeSec() + " min" + process.getTimeCount().getTimeMillis();
+                final String totalTime = "sec " + process.getTimeCount().getTimeSec() + " ms" + process.getTimeCount().getTimeMillis();
+                ShowData.println("Tiempo total " + totalTime);
                 final String resultHash = SB.toString().toUpperCase();
-                //labelResult.setValue("");
+
+
+                final HashBuilder hashBuilder = new HashBuilder();
+                hashBuilder.setFileName(process.getPath().getFileName().toString())
+                        .setHashType(messageDigest.getAlgorithm())
+                        .setHashResult(resultHash)
+                        .setHour(TypesFields.getHour())
+                        .setTime(totalTime)
+                        .setLength(TypesFields.getLength())
+                        .build();
+
+                /*
+                Init the grid
+                 */
+                GridTransactions.get().initData(hashBuilder);
+                process.getGridLogic().initData();
+
                 ShowData.println(messageDigest.getAlgorithm() + ": " + resultHash + "\n");
                 process.getRichTextAreaResult().setValue(messageDigest.getAlgorithm() + ": " + resultHash + "\n");
             } catch (IOException | NoSuchAlgorithmException ex) {

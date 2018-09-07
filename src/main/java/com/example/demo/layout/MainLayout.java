@@ -1,18 +1,15 @@
 package com.example.demo.layout;
 
 import com.example.demo.MyUI;
-import com.example.demo.calculateHashes.Hash;
 import com.example.demo.calculateHashes.UPloadFile;
+import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.calculateHashes.upload.UploadService;
 import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.teemu.switchui.Switch;
 
 import java.util.ArrayList;
@@ -24,8 +21,8 @@ import java.util.concurrent.Executors;
 public class MainLayout extends VerticalLayout implements View {
 
     private final MyUI ui;
+    final GridLogic gridLogic = new GridLogic();
     private VerticalLayout verticalLayoutMenu = new VerticalLayout();
-    private Grid<Hash> grid = new Grid<Hash>();
     private GridLayout gridLayout = new GridLayout();
     private RichTextArea richTextArea = new RichTextArea();
     private UPloadFile up;
@@ -75,7 +72,7 @@ public class MainLayout extends VerticalLayout implements View {
         new Thread(() -> {
             while(true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2500);
                     CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
                         ui.access(() -> {
                             if(!string.equals("Error")) {
@@ -162,8 +159,7 @@ public class MainLayout extends VerticalLayout implements View {
         cssLayout.addComponents(textField, btnChecks);
         gridLayout.addComponent(cssLayout, 0, 0);
 
-        final Component g = fillTheGrid();
-        gridLayout.addComponent(g, 0, 1);
+        gridLayout.addComponent(gridLogic, 0, 1);
 
         richTextArea.setSizeFull();
 
@@ -172,10 +168,10 @@ public class MainLayout extends VerticalLayout implements View {
                 .setProgressBar(bar)
                 .setBtnInterrupt(btnInterrupt)
                 .setRichTextArea(richTextArea)
+                .setGridLogic(gridLogic)
                 .build();
         up = new UPloadFile(uploadFileClass);
         gridLayout.addComponent(up, 1, 0);
-
 
         gridLayout.addComponent(richTextArea, 1, 1);
 
@@ -194,23 +190,4 @@ public class MainLayout extends VerticalLayout implements View {
         return gridLayout;
     }
 
-    private Grid<Hash> fillTheGrid() {
-
-        //aplicar patron builder aqui, se debera crear un constructor con muchos parametros
-        //para este caso amerita hacer dicho pattern
-        grid.setSizeFull();
-        grid.addColumn(Hash::getFilename).setCaption("File Name").setId("name");
-        grid.addColumn(Hash::getHashtype).setCaption("Hash Type").setId("type");
-        grid.addColumn(Hash::getHashresult).setCaption("Hash Result").setId("result");
-        grid.addColumn(Hash::getLength).setCaption("Length").setId("length");
-        grid.addColumn(Hash::getTime).setCaption("Time").setId("time");
-        grid.addColumn(Hash::getHour).setCaption("Hour").setId("hour");
-
-        final List<Hash> hashList = new ArrayList<Hash>();
-        final ListDataProvider<Hash> listDataProvider = new ListDataProvider<Hash>(hashList);
-
-        grid.setDataProvider(listDataProvider);
-
-        return grid;
-    }
 }

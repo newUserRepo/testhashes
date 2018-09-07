@@ -1,6 +1,7 @@
 package com.example.demo.calculateHashes;
 
 import com.example.demo.MyUI;
+import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.calculateHashes.processAsync.ProcessAsync;
 import com.example.demo.calculateHashes.processAsync.ProcessAsyncTask;
 import com.example.demo.calculateHashes.upload.UploadService;
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors;
 public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload.ProgressListener,Upload.SucceededListener {
 
     private final MyUI ui;
+    private GridLogic gridLogic;
     private ProgressBar progressBar;
     private final Button btnInterrupt;
     private Path path;
@@ -41,6 +43,8 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
         this.ui = uploadFileClass.getUi();
         this.progressBar = uploadFileClass.getProgressBar();
         this.btnInterrupt = uploadFileClass.getBtnInterrupt();
+        this.gridLogic = uploadFileClass.gridLogic();
+
         setMargin(false);
         upload = new Upload(null , this );
         upload.setEnabled(false);
@@ -97,6 +101,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
                 .setLabelResult(uploadService.getRichTextArea())
                 .setHashes(hashes)
                 .setTimeCount(timeCount)
+                .setGridLogic(gridLogic)
                 .build();
         final ProcessAsyncTask processAsyncTask = new ProcessAsyncTask();
 

@@ -33,7 +33,7 @@ public class Main extends SideMenu {
 
         setMenuCaption(TypesFields.MENU_CAPTION);
         addNavigation("Initial View", "");
-        addNavigation(TypesFields.PROCESS_HASHES, VaadinIcons.HAMMER, TypesFields.PROCESS_HASHES);
+        addNavigation("Process-Hashes", VaadinIcons.HAMMER, TypesFields.PROCESS_HASHES);
 
 
     }
