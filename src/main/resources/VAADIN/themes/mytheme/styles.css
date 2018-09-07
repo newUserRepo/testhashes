@@ -15050,8 +15050,8 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
-.mytheme .v-ui > .v-widget {
-	overflow: visible;
+.mytheme .label-hour {
+	padding: 7px 19px 7px 0px !important;
 }
 
 .mytheme .v-progressbar-wrapper {

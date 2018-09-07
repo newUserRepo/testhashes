@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import com.example.demo.util.TypesFields;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,6 @@ import java.io.IOException;
 @RestController
 public class ControllerPath implements ErrorController {
 
-    private static final String ERROR = "https://www.google.com";
-
     @ExceptionHandler(RuntimeException.class)
     @RequestMapping(method = RequestMethod.GET)
     private void getError(final RuntimeException ex, final HttpServletResponse httpServletResponse) throws IOException {
@@ -22,6 +21,6 @@ public class ControllerPath implements ErrorController {
 
     @Override
     public String getErrorPath() {
-        return ERROR;
+        return TypesFields.ERROR;
     }
 }

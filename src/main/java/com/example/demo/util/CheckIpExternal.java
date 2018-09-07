@@ -29,7 +29,6 @@ public class CheckIpExternal {
             while((s = reader.readLine()) != null) {
                 resultIP = resultIP.concat(s);
             }
-            ShowData.println("Ip Externa es: " + resultIP);
         } catch (IOException e) {
             resultIP = "Error";
             e.printStackTrace();

@@ -34,6 +34,10 @@
 @mixin mytheme {
   @include valo;
 
+   .label-hour {
+     padding: 7px 19px 7px 0px !important;
+   }
+
   .v-progressbar-wrapper {
      height: 37px !important;
      border-radius: 0px;

@@ -18,6 +18,8 @@ import org.vaadin.teemu.switchui.Switch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainLayout extends VerticalLayout implements View {
 
@@ -33,7 +35,7 @@ public class MainLayout extends VerticalLayout implements View {
     private static final String HASHES[] = {"MD5", "SHA1", "SHA-256", "SHA-384", "SHA-512"};
     private final Button buttonDeleteFile = new Button();
 
-
+    private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private Hora hora;
 
     private Label labelHora;
@@ -65,21 +67,33 @@ public class MainLayout extends VerticalLayout implements View {
 
         hora.setHour(this::getHour);
         labelHora = new Label("Hora Servidor: " + hora.getHour());
-
-        //labelHora = new Label("Hora Servidor: ");
+        labelHora.addStyleName("label-hour");
         labelHora.addStyleName("colored");
         labelIPExternal.addStyleName("colored");
-        CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
-           ui.access(() -> {
-               if(!string.equals("Error")) {
-                   labelIPExternal.addStyleName(ValoTheme.LABEL_SUCCESS);
-                   labelIPExternal.setValue("Ip: " + string);
-               }else {
-                   labelIPExternal.addStyleName(ValoTheme.LABEL_FAILURE);
-                   labelIPExternal.setValue("Ip: " + string);
-               }
-           });
-        });
+
+
+        new Thread(() -> {
+            while(true) {
+                try {
+                    Thread.sleep(1000);
+                    CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
+                        ui.access(() -> {
+                            if(!string.equals("Error")) {
+                                labelIPExternal.removeStyleName(ValoTheme.LABEL_FAILURE);
+                                labelIPExternal.addStyleName(ValoTheme.LABEL_SUCCESS);
+                                labelIPExternal.setValue("Ip: " + string);
+                            }else {
+                                labelIPExternal.addStyleName(ValoTheme.LABEL_FAILURE);
+                                labelIPExternal.setValue("Ip: " + string);
+                            }
+                        });
+                    });
+                }catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
 
         final HorizontalLayout rowRigth = new HorizontalLayout(labelIPExternal,labelHora);
         final HorizontalLayout horizontalLayoutHeader = new HorizontalLayout(label, rowRigth);
