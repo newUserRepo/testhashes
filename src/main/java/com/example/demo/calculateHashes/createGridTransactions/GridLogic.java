@@ -1,21 +1,27 @@
 package com.example.demo.calculateHashes.createGridTransactions;
 
 import com.example.demo.calculateHashes.Hash;
+import com.example.demo.util.ShowData;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GridLogic extends Grid<Hash> {
 
     private List<Hash> hashList;
     private ListDataProvider<Hash>listDataProvider;
+    private Button button;
 
-    public GridLogic() {
+    public GridLogic(final Button button) {
+        this.button = button;
         setSizeFull();
         initGrid();
 
+        deleteItem();
     }
 
     public void initGrid() {
@@ -38,5 +44,11 @@ public class GridLogic extends Grid<Hash> {
         setDataProvider(listDataProvider);
     }
 
+    public void deleteItem() {
+        button.addClickListener( e -> {
+            getSelectedItems().forEach( item -> listDataProvider.getItems().remove(item));
+            getDataProvider().refreshAll();
+        });
+    }
 
 }

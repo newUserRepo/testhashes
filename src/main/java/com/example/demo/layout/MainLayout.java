@@ -1,6 +1,7 @@
 package com.example.demo.layout;
 
 import com.example.demo.MyUI;
+import com.example.demo.calculateHashes.Hash;
 import com.example.demo.calculateHashes.UPloadFile;
 import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.calculateHashes.upload.UploadService;
@@ -21,7 +22,10 @@ import java.util.concurrent.Executors;
 public class MainLayout extends VerticalLayout implements View {
 
     private final MyUI ui;
-    final GridLogic gridLogic = new GridLogic();
+
+    private GridLogic gridLogic;
+    private Button buttonDeleteFile;
+
     private VerticalLayout verticalLayoutMenu = new VerticalLayout();
     private GridLayout gridLayout = new GridLayout();
     private RichTextArea richTextArea = new RichTextArea();
@@ -30,7 +34,6 @@ public class MainLayout extends VerticalLayout implements View {
     private final Button btnInterrupt = new Button();
     private CheckBoxGroup<String> checkBoxGroup = new CheckBoxGroup<String>();
     private static final String HASHES[] = {"MD5", "SHA1", "SHA-256", "SHA-384", "SHA-512"};
-    private final Button buttonDeleteFile = new Button();
 
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private Hora hora;
@@ -72,7 +75,7 @@ public class MainLayout extends VerticalLayout implements View {
         new Thread(() -> {
             while(true) {
                 try {
-                    Thread.sleep(2500);
+                    Thread.sleep(1000);
                     CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
                         ui.access(() -> {
                             if(!string.equals("Error")) {
@@ -159,7 +162,8 @@ public class MainLayout extends VerticalLayout implements View {
         cssLayout.addComponents(textField, btnChecks);
         gridLayout.addComponent(cssLayout, 0, 0);
 
-        gridLayout.addComponent(gridLogic, 0, 1);
+        final Component grid = fillGridLogic();
+        gridLayout.addComponent(grid, 0, 1);
 
         richTextArea.setSizeFull();
 
@@ -188,6 +192,12 @@ public class MainLayout extends VerticalLayout implements View {
         gridLayout.addComponent(cssLayout1, 1, 2);
 
         return gridLayout;
+    }
+
+    private Grid<Hash> fillGridLogic() {
+        buttonDeleteFile = new Button();
+        gridLogic = new GridLogic(buttonDeleteFile);
+        return gridLogic;
     }
 
 }
