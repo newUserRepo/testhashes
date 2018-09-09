@@ -22,4 +22,8 @@ public class TypesFields {
                 .withZone(ZoneId.systemDefault())
                 .format(Instant.now());
     }
+
+    public static String getTotalTime(final long init, final long end) {
+        return "sec " + init + " ms" + end;
+    }
 }

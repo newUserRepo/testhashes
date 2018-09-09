@@ -9,14 +9,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 //how to apply pattern builder here!!!
 //view OCP design patterns
 public class ProcessAsyncTask implements ProcessAsyncInterface {
-
-
-    private StringBuilder SB = new StringBuilder();
 
     @Override
     public void calculateHashAsync(ProcessAsync process) {
@@ -25,20 +23,23 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
     }
 
     private void readFileTxtAsync(final ProcessAsync process ) {
+        final StringBuilder sb = new StringBuilder();
         if(process.getPath().toString().endsWith(".txt")) {
             try(Stream<String> lines = Files.lines(process.getPath())) {
                 lines.map(param -> param.split("/")[0])
-                        .forEach(f -> SB.append(f + "\n"));
-                process.getRichTextAreaResult().setValue(SB.toString());
+                        .forEach(f -> sb.append(f + "\n"));
+                process.getRichTextAreaResult().setValue(sb.toString());
 
             }catch (IOException ex) {
 
             }
         }
     }
+
     private void readFileAsync(final ProcessAsync process) {
         for(int f=0; f<= process.getHashes().size(); f++) {
             try (final BufferedInputStream input = new BufferedInputStream(Files.newInputStream(process.getPath()))) {
+                final StringBuilder sb = new StringBuilder();
                 process.getTimeCount().init();
                 final MessageDigest messageDigest = MessageDigest.getInstance(process.getHashes().get(f));
                 int dataRead = 0;
@@ -52,14 +53,15 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
                     process.getBar().setValue(percent);
                 }
                 final byte[] bytesDigest = messageDigest.digest();
+
+                //FIXME add streams or parallelStreams
                 for (int c = 0; c < bytesDigest.length; c++) {
-                    SB.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1));
+                    sb.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1));
                 }
                 process.getTimeCount().endTime();
-                final String totalTime = "sec " + process.getTimeCount().getTimeSec() + " ms" + process.getTimeCount().getTimeMillis();
+                final String totalTime = TypesFields.getTotalTime(process.getTimeCount().getTimeSec() , process.getTimeCount().getTimeMillis());
                 ShowData.println("Tiempo total " + totalTime);
-                final String resultHash = SB.toString().toUpperCase();
-
+                final String resultHash = sb.toString().toUpperCase();
 
                 final HashBuilder hashBuilder = new HashBuilder();
                 hashBuilder.setFileName(process.getPath().getFileName().toString())

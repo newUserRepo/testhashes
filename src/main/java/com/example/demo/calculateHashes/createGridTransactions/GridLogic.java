@@ -1,14 +1,11 @@
 package com.example.demo.calculateHashes.createGridTransactions;
 
 import com.example.demo.calculateHashes.Hash;
-import com.example.demo.util.ShowData;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class GridLogic extends Grid<Hash> {
 
