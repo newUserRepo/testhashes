@@ -24,6 +24,6 @@ public class TypesFields {
     }
 
     public static String getTotalTime(final long init, final long end) {
-        return "sec " + init + " ms" + end;
+        return init +" sec " + end +" ms";
     }
 }

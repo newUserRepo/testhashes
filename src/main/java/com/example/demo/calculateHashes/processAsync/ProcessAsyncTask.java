@@ -4,11 +4,14 @@ import com.example.demo.calculateHashes.HashBuilder;
 import com.example.demo.calculateHashes.createGridTransactions.GridTransactions;
 import com.example.demo.util.ShowData;
 import com.example.demo.util.TypesFields;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -22,22 +25,22 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
         readFileAsync(process);
     }
 
-    private void readFileTxtAsync(final ProcessAsync process ) {
+    private void readFileTxtAsync(final ProcessAsync process) {
         final StringBuilder sb = new StringBuilder();
-        if(process.getPath().toString().endsWith(".txt")) {
-            try(Stream<String> lines = Files.lines(process.getPath())) {
+        if (process.getPath().toString().endsWith(".txt")) {
+            try (Stream<String> lines = Files.lines(process.getPath())) {
                 lines.map(param -> param.split("/")[0])
                         .forEach(f -> sb.append(f + "\n"));
                 process.getRichTextAreaResult().setValue(sb.toString());
 
-            }catch (IOException ex) {
+            } catch (IOException ex) {
 
             }
         }
     }
 
     private void readFileAsync(final ProcessAsync process) {
-        for(int f=0; f<= process.getHashes().size(); f++) {
+        for (int f = 0; f <= process.getHashes().size(); f++) {
             try (final BufferedInputStream input = new BufferedInputStream(Files.newInputStream(process.getPath()))) {
                 final StringBuilder sb = new StringBuilder();
                 process.getTimeCount().init();
@@ -55,11 +58,13 @@ public class ProcessAsyncTask implements ProcessAsyncInterface {
                 final byte[] bytesDigest = messageDigest.digest();
 
                 //FIXME add streams or parallelStreams
-                for (int c = 0; c < bytesDigest.length; c++) {
-                    sb.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1));
-                }
+                //parallel task here, for example
+                IntStream.range(0, bytesDigest.length)
+                        .boxed()
+                        .forEach(c -> sb.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1)));
+
                 process.getTimeCount().endTime();
-                final String totalTime = TypesFields.getTotalTime(process.getTimeCount().getTimeSec() , process.getTimeCount().getTimeMillis());
+                final String totalTime = TypesFields.getTotalTime(process.getTimeCount().getTimeSec(), process.getTimeCount().getTimeMillis());
                 ShowData.println("Tiempo total " + totalTime);
                 final String resultHash = sb.toString().toUpperCase();
 
