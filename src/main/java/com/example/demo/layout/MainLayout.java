@@ -2,11 +2,13 @@ package com.example.demo.layout;
 
 import com.example.demo.MyUI;
 import com.example.demo.calculateHashes.Hash;
+import com.example.demo.calculateHashes.HashesTypes;
 import com.example.demo.calculateHashes.UPloadFile;
 import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.calculateHashes.upload.UploadService;
 import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
+import com.example.demo.util.TypesFields;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
@@ -14,6 +16,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.vaadin.teemu.switchui.Switch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -33,8 +36,6 @@ public class MainLayout extends VerticalLayout implements View {
     private final ProgressBar bar = new ProgressBar();
     private final Button btnInterrupt = new Button();
     private CheckBoxGroup<String> checkBoxGroup = new CheckBoxGroup<String>();
-    private static final String HASHES[] = {"MD5", "SHA1", "SHA-256", "SHA-384", "SHA-512"};
-
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private Hora hora;
 
@@ -42,7 +43,7 @@ public class MainLayout extends VerticalLayout implements View {
     private boolean value;
 
     private Label labelIPExternal = new Label();
-    private List<String> hashes;
+    private HashesTypes hashesTypes;
     private Switch s = new Switch();
 
     public MainLayout(final MyUI ui, final Hora hora) {
@@ -73,29 +74,29 @@ public class MainLayout extends VerticalLayout implements View {
 
 
         new Thread(() -> {
-            while(true) {
+            while (true) {
                 try {
                     Thread.sleep(1000);
                     CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
                         ui.access(() -> {
-                            if(!string.equals("Error")) {
+                            if (!string.equals("Error")) {
                                 labelIPExternal.removeStyleName(ValoTheme.LABEL_FAILURE);
                                 labelIPExternal.addStyleName(ValoTheme.LABEL_SUCCESS);
                                 labelIPExternal.setValue("Ip: " + string);
-                            }else {
+                            } else {
                                 labelIPExternal.addStyleName(ValoTheme.LABEL_FAILURE);
                                 labelIPExternal.setValue("Ip: " + string);
                             }
                         });
                     });
-                }catch (InterruptedException ex) {
+                } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
             }
         }).start();
 
 
-        final HorizontalLayout rowRigth = new HorizontalLayout(labelIPExternal,labelHora);
+        final HorizontalLayout rowRigth = new HorizontalLayout(labelIPExternal, labelHora);
         final HorizontalLayout horizontalLayoutHeader = new HorizontalLayout(label, rowRigth);
         horizontalLayoutHeader.setWidth("100%");
         horizontalLayoutHeader.setComponentAlignment(rowRigth, Alignment.MIDDLE_RIGHT);
@@ -105,7 +106,7 @@ public class MainLayout extends VerticalLayout implements View {
 
     private void getHour(final String hora) {
 
-        if(ui.isAttached())
+        if (ui.isAttached())
             ui.access(() -> labelHora.setValue(hora));
     }
 
@@ -118,20 +119,38 @@ public class MainLayout extends VerticalLayout implements View {
         verticalLayoutMenu.setHeight("100%");
         verticalLayoutMenu.setMargin(false);
 
-        checkBoxGroup.setItems(HASHES);
+        checkBoxGroup.setItems(TypesFields.HASHES);
         checkBoxGroup.addValueChangeListener(e -> {
-            hashes = new ArrayList<String>();
             final Set<String> set = e.getValue();
-            set.forEach(p -> hashes.add(p));
-            if(hashes.size() >= 1) {
+            final List<String> crc32 = new ArrayList<>();
+            final List<String> md5andSha = new ArrayList<>();
+
+            set.stream()
+                    .filter(hash -> hash.contains("CRC32"))
+                    .forEach(p -> crc32.add(p));
+            set.stream()
+                    .filter(hash -> !hash.contains("CRC32"))
+                    .forEach(p -> md5andSha.add(p));
+
+
+            crc32.forEach(c -> System.out.println("Hashes only crc32 " + c));
+            md5andSha.forEach(m -> System.out.println("Md5AndHash only: " +m));
+
+            final HashesTypes hashesTypes = new HashesTypes.Builder()
+                    .setCrc32(crc32)
+                    .setMd5AndSha(md5andSha)
+                    .build();
+
+            if (set.size() >= 1) {
                 up.setEnabledButton(true);
-            }else {
+                up.setHashes(hashesTypes);
+            } else {
                 up.setEnabledButton(false);
             }
-            up.setHashes(hashes);
+
         });
 
-        verticalLayoutMenu.addComponents(checkBoxGroup,s, labelVersion);
+        verticalLayoutMenu.addComponents(checkBoxGroup, s, labelVersion);
         verticalLayoutMenu.setComponentAlignment(s, Alignment.TOP_CENTER);
         verticalLayoutMenu.setComponentAlignment(labelVersion, Alignment.BOTTOM_CENTER);
         verticalLayoutMenu.setExpandRatio(labelVersion, 1);

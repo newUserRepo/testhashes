@@ -15,13 +15,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringUI
-public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload.ProgressListener,Upload.SucceededListener {
+public class UPloadFile extends VerticalLayout implements Upload.Receiver, Upload.ProgressListener, Upload.SucceededListener {
 
     private final MyUI ui;
     private GridLogic gridLogic;
@@ -30,14 +29,14 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
     private Path path;
     private TextField txtPath = new TextField();
     private TimeCount timeCount = new TimeCount();
-    private List<String> hashes;
+    private HashesTypes hashesTypes;
     private Panel panel = new Panel();
     private Label labelHour = new Label();
     private Upload upload;
     private CssLayout row = new CssLayout();
     private final UploadService uploadService;
 
-    
+
     public UPloadFile(final UploadService uploadFileClass) {
         this.uploadService = uploadFileClass;
         this.ui = uploadFileClass.getUi();
@@ -46,7 +45,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
         this.gridLogic = uploadFileClass.gridLogic();
 
         setMargin(false);
-        upload = new Upload(null , this );
+        upload = new Upload(null, this);
         upload.setEnabled(false);
         upload.addProgressListener(this);
         upload.addSucceededListener(this);
@@ -56,17 +55,19 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
         addComponents(row_);
     }
 
-    public void setHashes(final List<String> hashes) {
-        this.hashes = hashes;
+    public void setHashes(final HashesTypes hashesTypes) {
+        this.hashesTypes = hashesTypes;
     }
+
     public void setEnabledButton(final boolean value) {
         upload.setEnabled(value);
     }
+
     private Component getRow() {
         row.setWidth("100%");
         txtPath.setPlaceholder("filename");
         txtPath.setWidth("100%");
-        row.addComponents(upload,txtPath);
+        row.addComponents(upload, txtPath);
         row.addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         row.addStyleName("css-space-2");
         return row;
@@ -74,7 +75,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
 
     @Override
     public void updateProgress(long readBytes, long contentLength) {
-        final Float percent = (readBytes/(float)contentLength);
+        final Float percent = (readBytes / (float) contentLength);
         progressBar.setValue(percent);
     }
 
@@ -85,7 +86,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
         BufferedOutputStream bufferedOutputStream = null;
         try {
             bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             Notification.show("Error al subir archivo", Notification.Type.ERROR_MESSAGE);
         }
         return bufferedOutputStream;
@@ -99,21 +100,21 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver,Upload
                 .setPath(path)
                 .setProgressBar(uploadService.getProgressBar())
                 .setLabelResult(uploadService.getRichTextArea())
-                .setHashes(hashes)
+                .setHashes(hashesTypes)
                 .setTimeCount(timeCount)
                 .setGridLogic(gridLogic)
                 .build();
         final ProcessAsyncTask processAsyncTask = new ProcessAsyncTask();
 
-        run(() -> processAsyncTask.calculateHashAsync(processAsync) , "Hash ready!!!");
+        run(() -> processAsyncTask.calculateHashAsync(processAsync), "Hash ready!!!");
 
     }
 
-    private void run(final Runnable run , final String msg) {
+    private void run(final Runnable run, final String msg) {
         final ExecutorService ex = Executors.newSingleThreadExecutor();
-        final CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(run,ex);
-        completableFuture.whenCompleteAsync((message , error) -> {
-           ui.access(() -> Notification.show( msg , Notification.Type.HUMANIZED_MESSAGE));
+        final CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(run, ex);
+        completableFuture.whenCompleteAsync((message, error) -> {
+            ui.access(() -> Notification.show(msg, Notification.Type.HUMANIZED_MESSAGE));
         });
     }
 

@@ -7,6 +7,9 @@ import java.util.Locale;
 
 public class TypesFields {
 
+    public static final String HASHES[] = {"CRC32","MD5", "SHA1", "SHA-256", "SHA-384", "SHA-512"};
+
+
     public static final String IP_EXTERNAL = "http://checkip.amazonaws.com";
     public static final String MENU_CAPTION = "HashesDemo";
     public static final String PROCESS_HASHES = "hashes";

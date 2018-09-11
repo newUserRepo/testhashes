@@ -1,19 +1,18 @@
 package com.example.demo.calculateHashes.processAsync;
 
+import com.example.demo.calculateHashes.HashesTypes;
 import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.util.TimeCount;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.RichTextArea;
-
 import java.nio.file.Path;
-import java.util.List;
 
 public final class ProcessAsync {
     //final Path path, final ProgressBar bar, final Label labelResult, final String hash
     private final Path path;
     private final ProgressBar bar;
     private final RichTextArea richTextArea;
-    private final List<String> hashes;
+    private final HashesTypes hashesTypes;
     private final TimeCount timeCount;
     private GridLogic gridLogic;
 
@@ -23,10 +22,10 @@ public final class ProcessAsync {
         this.richTextArea = builder.richTextArea;
         this.timeCount = builder.timeCount;
         this.gridLogic = builder.gridLogic;
-        if(builder.hashes == null) {
+        if(builder.hashesTypes == null) {
             throw new RuntimeException("Hashes it`s required");
         }
-        this.hashes = builder.hashes;
+        this.hashesTypes = builder.hashesTypes;
     }
 
     public Path getPath() {
@@ -41,8 +40,8 @@ public final class ProcessAsync {
         return richTextArea;
     }
 
-    public List<String> getHashes() {
-        return hashes;
+    public HashesTypes getHashes() {
+        return hashesTypes;
     }
 
     public TimeCount getTimeCount() {return timeCount;}
@@ -56,7 +55,7 @@ public final class ProcessAsync {
                 "path=" + path +
                 ", bar=" + bar +
                 ", richTextArea=" + richTextArea +
-                ", hashes=" + hashes +
+                ", hashes=" + hashesTypes +
                 ", grid = "  + gridLogic +
                 '}';
     }
@@ -65,7 +64,7 @@ public final class ProcessAsync {
         private Path path;
         private ProgressBar progressBar;
         private RichTextArea richTextArea;
-        private List<String> hashes;
+        private HashesTypes hashesTypes;
         private TimeCount timeCount;
         private GridLogic gridLogic;
 
@@ -81,8 +80,8 @@ public final class ProcessAsync {
             this.richTextArea = richTextArea;
             return this;
         }
-        public Builder setHashes(final List<String> hashes) {
-            this.hashes = hashes;
+        public Builder setHashes(final HashesTypes hashesTypes) {
+            this.hashesTypes = hashesTypes;
             return this;
         }
         public Builder setTimeCount(final TimeCount timeCount) {
