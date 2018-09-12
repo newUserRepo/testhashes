@@ -75,6 +75,14 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>jonelo.jacksum</groupId>
+			<artifactId>jacksum</artifactId>
+			<version>1.7.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/jacksum.jar</systemPath>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
