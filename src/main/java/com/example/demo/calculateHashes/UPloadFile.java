@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@SpringUI
+
 public class UPloadFile extends VerticalLayout implements Upload.Receiver, Upload.ProgressListener, Upload.SucceededListener {
 
     private final MyUI ui;
