@@ -1,11 +1,11 @@
 package com.example.demo.calculateHashes;
 
-public class HashBuilder {
+public final class HashBuilder {
 
     public String filename;
     public String hashtype;
     public String hashresult;
-    public Integer length;
+    public String size;
     public String time;
     public String hour;
 
@@ -24,8 +24,8 @@ public class HashBuilder {
         return this;
     }
 
-    public HashBuilder setLength(final Integer length) {
-        this.length = length;
+    public HashBuilder setSize(final String size) {
+        this.size = size;
         return this;
     }
 
