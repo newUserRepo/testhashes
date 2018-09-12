@@ -122,7 +122,7 @@ public class MainLayout extends VerticalLayout implements View {
         verticalLayoutMenu.setMargin(false);
 
         checkBoxGroup.setItems(TypesFields.HASHES);
-        checkBoxGroup.setItemCaptionGenerator( e -> e.replace("haval_256_4","HAVAL-256-5"));
+        checkBoxGroup.setItemCaptionGenerator( e -> e.replace("haval_256_4","HAVAL-256-4"));
         checkBoxGroup.addValueChangeListener(e -> {
             final Set<String> set = e.getValue();
             final List<String> crc32 = new ArrayList<>();

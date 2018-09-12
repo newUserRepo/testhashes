@@ -39,13 +39,12 @@ public class CalculateHashes {
 
             final HashBuilder hashBuilder = new HashBuilder();
             hashBuilder.setFileName(process.getPath().getFileName().toString())
-                    .setHashType("HAVAL-256")
+                    .setHashType("HAVAL-256-4")
                     .setHashResult(haval.getFormattedValue())
                     .setSize(TypesFields.getSize(length))
                     .setHour(TypesFields.getHour())
                     .setTime(TypesFields.getTotalTime(process))
                     .build();
-
             GridTransactions.get().initData(hashBuilder);
             process.getGridLogic().initData();
 
@@ -55,6 +54,9 @@ public class CalculateHashes {
             e.printStackTrace();
         }
     }
+
+
+
 
     public static void calcCrc32(final ProcessAsync process) {
         final List<String> crc32List = process.getHashes().getCrc32();
@@ -190,6 +192,7 @@ public class CalculateHashes {
                 ShowData.println(messageDigest.getAlgorithm() + ": " + resultHash + "\n");
                 final String resultString = messageDigest.getAlgorithm() + ": " + resultHash;
                 process.getRichTextAreaResult().setValue(resultString);
+
             } catch (IOException | NoSuchAlgorithmException ex) {
                 ex.printStackTrace();
             }

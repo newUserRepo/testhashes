@@ -1,0 +1,77 @@
+[1mdiff --git a/src/main/java/com/example/demo/calculateHashes/processAsync/CalculateHashes.java b/src/main/java/com/example/demo/calculateHashes/processAsync/CalculateHashes.java[m
+[1mindex f709615..ec120f0 100755[m
+[1m--- a/src/main/java/com/example/demo/calculateHashes/processAsync/CalculateHashes.java[m
+[1m+++ b/src/main/java/com/example/demo/calculateHashes/processAsync/CalculateHashes.java[m
+[36m@@ -39,7 +39,7 @@[m [mpublic class CalculateHashes {[m
+ [m
+             final HashBuilder hashBuilder = new HashBuilder();[m
+             hashBuilder.setFileName(process.getPath().getFileName().toString())[m
+[31m-                    .setHashType("HAVAL-256")[m
+[32m+[m[32m                    .setHashType("HAVAL-256-4")[m[41m[m
+                     .setHashResult(haval.getFormattedValue())[m
+                     .setSize(TypesFields.getSize(length))[m
+                     .setHour(TypesFields.getHour())[m
+[36m@@ -48,7 +48,7 @@[m [mpublic class CalculateHashes {[m
+ [m
+             GridTransactions.get().initData(hashBuilder);[m
+             process.getGridLogic().initData();[m
+[31m-[m
+[32m+[m[32m            Files.delete(process.getPath());[m[41m[m
+         } catch (IOException e) {[m
+             e.printStackTrace();[m
+         } catch (NoSuchAlgorithmException e) {[m
+[36m@@ -56,6 +56,9 @@[m [mpublic class CalculateHashes {[m
+         }[m
+     }[m
+ [m
+[32m+[m[41m[m
+[32m+[m[41m[m
+[32m+[m[41m[m
+     public static void calcCrc32(final ProcessAsync process) {[m
+         final List<String> crc32List = process.getHashes().getCrc32();[m
+         for (int f = 0; f < crc32List.size(); f++) {[m
+[36m@@ -190,6 +193,7 @@[m [mpublic class CalculateHashes {[m
+                 ShowData.println(messageDigest.getAlgorithm() + ": " + resultHash + "\n");[m
+                 final String resultString = messageDigest.getAlgorithm() + ": " + resultHash;[m
+                 process.getRichTextAreaResult().setValue(resultString);[m
+[32m+[m[32m                Files.delete(process.getPath());[m[41m[m
+             } catch (IOException | NoSuchAlgorithmException ex) {[m
+                 ex.printStackTrace();[m
+             }[m
+[1mdiff --git a/src/main/java/com/example/demo/calculateHashes/processAsync/ProcessAsyncTask.java b/src/main/java/com/example/demo/calculateHashes/processAsync/ProcessAsyncTask.java[m
+[1mindex c56860a..070c78f 100755[m
+[1m--- a/src/main/java/com/example/demo/calculateHashes/processAsync/ProcessAsyncTask.java[m
+[1m+++ b/src/main/java/com/example/demo/calculateHashes/processAsync/ProcessAsyncTask.java[m
+[36m@@ -1,19 +1,9 @@[m
+ package com.example.demo.calculateHashes.processAsync;[m
+ [m
+[31m-import com.example.demo.calculateHashes.HashBuilder;[m
+[31m-import com.example.demo.calculateHashes.createGridTransactions.GridTransactions;[m
+[31m-import com.example.demo.util.ShowData;[m
+[31m-import com.example.demo.util.TypesFields;[m
+ [m
+[31m-import java.io.BufferedInputStream;[m
+ import java.io.IOException;[m
+ import java.nio.file.Files;[m
+[31m-import java.security.MessageDigest;[m
+[31m-import java.security.NoSuchAlgorithmException;[m
+[31m-import java.util.List;[m
+[31m-import java.util.stream.IntStream;[m
+ import java.util.stream.Stream;[m
+[31m-import java.util.zip.CRC32;[m
+ [m
+ //how to apply pattern builder here!!![m
+ //view OCP design patterns[m
+[1mdiff --git a/src/main/java/com/example/demo/layout/MainLayout.java b/src/main/java/com/example/demo/layout/MainLayout.java[m
+[1mindex 037160a..2a86bfa 100755[m
+[1m--- a/src/main/java/com/example/demo/layout/MainLayout.java[m
+[1m+++ b/src/main/java/com/example/demo/layout/MainLayout.java[m
+[36m@@ -122,7 +122,7 @@[m [mpublic class MainLayout extends VerticalLayout implements View {[m
+         verticalLayoutMenu.setMargin(false);[m
+ [m
+         checkBoxGroup.setItems(TypesFields.HASHES);[m
+[31m-        checkBoxGroup.setItemCaptionGenerator( e -> e.replace("haval_256_4","HAVAL-256-5"));[m
+[32m+[m[32m        checkBoxGroup.setItemCaptionGenerator( e -> e.replace("haval_256_4","HAVAL-256-4"));[m[41m[m
+         checkBoxGroup.addValueChangeListener(e -> {[m
+             final Set<String> set = e.getValue();[m
+             final List<String> crc32 = new ArrayList<>();[m
