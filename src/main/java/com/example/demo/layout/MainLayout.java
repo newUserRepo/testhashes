@@ -8,6 +8,7 @@ import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.calculateHashes.upload.UploadService;
 import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
+import com.example.demo.util.ShowData;
 import com.example.demo.util.TypesFields;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -15,6 +16,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.vaadin.teemu.switchui.Switch;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,25 +122,36 @@ public class MainLayout extends VerticalLayout implements View {
         verticalLayoutMenu.setMargin(false);
 
         checkBoxGroup.setItems(TypesFields.HASHES);
+        checkBoxGroup.setItemCaptionGenerator( e -> e.replace("haval_256_4","HAVAL-256-4"));
         checkBoxGroup.addValueChangeListener(e -> {
             final Set<String> set = e.getValue();
             final List<String> crc32 = new ArrayList<>();
             final List<String> md5andSha = new ArrayList<>();
+            final List<String> adler32 = new ArrayList<>();
+            final List<String> haval256 = new ArrayList<>();
 
             set.stream()
                     .filter(hash -> hash.contains("CRC32"))
                     .forEach(p -> crc32.add(p));
             set.stream()
-                    .filter(hash -> !hash.contains("CRC32"))
+                    .filter(hashes -> hashes.contains("ADLER32"))
+                    .forEach(p -> adler32.add(p));
+            set.stream()
+                    .filter(hash -> TypesFields.onlySHA(hash))
                     .forEach(p -> md5andSha.add(p));
-
+            set.stream()
+                    .filter(hash -> hash.contains("haval_256_4"))
+                    .forEach(p -> haval256.add(p));
 
             crc32.forEach(c -> System.out.println("Hashes only crc32 " + c));
+            adler32.forEach(a -> ShowData.println("Hashes adler: "+a));
             md5andSha.forEach(m -> System.out.println("Md5AndHash only: " +m));
 
             final HashesTypes hashesTypes = new HashesTypes.Builder()
                     .setCrc32(crc32)
                     .setMd5AndSha(md5andSha)
+                    .setAdler32(adler32)
+                    .setHaval256(haval256)
                     .build();
 
             if (set.size() >= 1) {
@@ -148,6 +161,13 @@ public class MainLayout extends VerticalLayout implements View {
                 up.setEnabledButton(false);
             }
 
+        });
+        s.addValueChangeListener( e -> {
+            if(e.getValue()) {
+                checkBoxGroup.select(TypesFields.HASHES);
+            } else {
+                checkBoxGroup.deselectAll();
+            }
         });
 
         verticalLayoutMenu.addComponents(checkBoxGroup, s, labelVersion);

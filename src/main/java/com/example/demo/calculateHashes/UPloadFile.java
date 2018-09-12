@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@SpringUI
+
 public class UPloadFile extends VerticalLayout implements Upload.Receiver, Upload.ProgressListener, Upload.SucceededListener {
 
     private final MyUI ui;
@@ -99,7 +99,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
         final ProcessAsync processAsync = new ProcessAsync.Builder()
                 .setPath(path)
                 .setProgressBar(uploadService.getProgressBar())
-                .setLabelResult(uploadService.getRichTextArea())
+                .setRichTextAreaResult(uploadService.getRichTextArea())
                 .setHashes(hashesTypes)
                 .setTimeCount(timeCount)
                 .setGridLogic(gridLogic)

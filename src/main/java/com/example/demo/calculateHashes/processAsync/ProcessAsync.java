@@ -8,7 +8,7 @@ import com.vaadin.ui.RichTextArea;
 import java.nio.file.Path;
 
 public final class ProcessAsync {
-    //final Path path, final ProgressBar bar, final Label labelResult, final String hash
+
     private final Path path;
     private final ProgressBar bar;
     private final RichTextArea richTextArea;
@@ -49,6 +49,7 @@ public final class ProcessAsync {
     public GridLogic getGridLogic() {
         return gridLogic;
     }
+
     @Override
     public String toString() {
         return "ProcessAsync{" +
@@ -76,7 +77,7 @@ public final class ProcessAsync {
             this.progressBar = progressBar;
             return this;
         }
-        public Builder setLabelResult(final RichTextArea richTextArea) {
+        public Builder setRichTextAreaResult(final RichTextArea richTextArea) {
             this.richTextArea = richTextArea;
             return this;
         }
