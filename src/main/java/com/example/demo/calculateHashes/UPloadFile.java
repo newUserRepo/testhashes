@@ -97,6 +97,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
         progressBar.setValue(0.0f);
 
         final ProcessAsync processAsync = new ProcessAsync.Builder()
+                .setUI(ui)
                 .setPath(path)
                 .setProgressBar(uploadService.getProgressBar())
                 .setRichTextAreaResult(uploadService.getRichTextArea())

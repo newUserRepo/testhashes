@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Set;
 
 public class TypesFields {
 
@@ -21,6 +20,7 @@ public class TypesFields {
     public static final String IP_EXTERNAL = "http://checkip.amazonaws.com";
     public static final String MENU_CAPTION = "HashesDemo";
     public static final String PROCESS_HASHES = "hashes";
+    public static final String PATH = "path";
     public static final String ERROR = "https://www.google.com";
     public static final String PATTER_HOUR = "h:mm:ss a";
 

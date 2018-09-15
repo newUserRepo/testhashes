@@ -4,6 +4,7 @@ import com.example.demo.calculateHashes.HashBuilder;
 import com.example.demo.calculateHashes.createGridTransactions.GridTransactions;
 import com.example.demo.util.ShowData;
 import com.example.demo.util.TypesFields;
+import com.vaadin.navigator.View;
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 import java.io.BufferedInputStream;
@@ -16,46 +17,48 @@ import java.util.stream.IntStream;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 
-public class CalculateHashes {
+public class CalculateHashes implements View {
+
 
     public static void calcHaval256_4(final ProcessAsync process) {
         final List<String> haval256 = process.getHashes().getHaval256();
-        try (final BufferedInputStream in = new BufferedInputStream(Files.newInputStream(process.getPath()))) {
-            process.getTimeCount().init();
-            final StringBuilder sb = new StringBuilder();
-            final AbstractChecksum haval = JacksumAPI.getChecksumInstance("haval_256_4");
-            final byte[] bytes = new byte[1024];
-            int bytesRead = 0;
-            long sum = 0;
-            long length = process.getPath().toFile().length();
+        for (int f = 0; f < haval256.size(); f++) {
+            try (final BufferedInputStream in = new BufferedInputStream(Files.newInputStream(process.getPath()))) {
+                process.getTimeCount().init();
+                final StringBuilder sb = new StringBuilder();
+                final AbstractChecksum haval = JacksumAPI.getChecksumInstance("haval_256_4");
+                final byte[] bytes = new byte[1024];
+                int bytesRead = 0;
+                long sum = 0;
+                long length = process.getPath().toFile().length();
 
-            while ((bytesRead = in.read(bytes)) != -1) {
-                haval.update(bytes, 0, bytesRead);
-                sum += bytesRead;
-                final Float percent = (sum / (float) length);
-                process.getBar().setValue(percent);
+                while ((bytesRead = in.read(bytes)) != -1) {
+                    haval.update(bytes, 0, bytesRead);
+                    sum += bytesRead;
+                    final Float percent = (sum / (float) length);
+                    process.getBar().setValue(percent);
+                }
+                process.getTimeCount().endTime();
+
+                final HashBuilder hashBuilder = new HashBuilder();
+                hashBuilder.setFileName(process.getPath().getFileName().toString())
+                        .setHashType("HAVAL-256-4")
+                        .setHashResult(haval.getFormattedValue())
+                        .setSize(TypesFields.getSize(length))
+                        .setHour(TypesFields.getHour())
+                        .setTime(TypesFields.getTotalTime(process))
+                        .build();
+                GridTransactions.get().initData(hashBuilder);
+                process.getGridLogic().initData();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
             }
-            process.getTimeCount().endTime();
-
-            final HashBuilder hashBuilder = new HashBuilder();
-            hashBuilder.setFileName(process.getPath().getFileName().toString())
-                    .setHashType("HAVAL-256-4")
-                    .setHashResult(haval.getFormattedValue())
-                    .setSize(TypesFields.getSize(length))
-                    .setHour(TypesFields.getHour())
-                    .setTime(TypesFields.getTotalTime(process))
-                    .build();
-            GridTransactions.get().initData(hashBuilder);
-            process.getGridLogic().initData();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
+
     }
-
-
 
 
     public static void calcCrc32(final ProcessAsync process) {
@@ -91,7 +94,6 @@ public class CalculateHashes {
                  */
                 GridTransactions.get().initData(hashBuilder);
                 process.getGridLogic().initData();
-
                 ShowData.println("CRC32" + ": " + resultHash + "\n");
                 String result2 = "\n" + resultHash;
                 process.getRichTextAreaResult().setValue("CRC32" + ": " + result2 + "\n");
@@ -99,6 +101,8 @@ public class CalculateHashes {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
         }
     }
 

@@ -28,13 +28,13 @@ public class Main extends SideMenu {
         //add view
         navigator.addView("" , new InitialView(ui));
         navigator.addView(TypesFields.PROCESS_HASHES , new MainLayout(ui, hora));
-
+        navigator.addView(TypesFields.PATH , new PathView(ui));
         navigator.navigateTo("");
 
         setMenuCaption(TypesFields.MENU_CAPTION);
         addNavigation("Initial View", "");
         addNavigation("Process-Hashes", VaadinIcons.HAMMER, TypesFields.PROCESS_HASHES);
-
+        addNavigation("Path" , VaadinIcons.FOLDER , TypesFields.PATH);
 
     }
 }

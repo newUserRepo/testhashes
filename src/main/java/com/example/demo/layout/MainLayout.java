@@ -10,6 +10,7 @@ import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
 import com.example.demo.util.ShowData;
 import com.example.demo.util.TypesFields;
+import com.example.demo.util.event.MyEventBus;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
@@ -139,6 +140,7 @@ public class MainLayout extends VerticalLayout implements View {
             set.stream()
                     .filter(hash -> TypesFields.onlySHA(hash))
                     .forEach(p -> md5andSha.add(p));
+            //FIXME
             set.stream()
                     .filter(hash -> hash.contains("haval_256_4"))
                     .forEach(p -> haval256.add(p));
@@ -146,6 +148,7 @@ public class MainLayout extends VerticalLayout implements View {
             crc32.forEach(c -> System.out.println("Hashes only crc32 " + c));
             adler32.forEach(a -> ShowData.println("Hashes adler: "+a));
             md5andSha.forEach(m -> System.out.println("Md5AndHash only: " +m));
+            haval256.forEach(a -> System.out.println("HavalHash only: " +a));
 
             final HashesTypes hashesTypes = new HashesTypes.Builder()
                     .setCrc32(crc32)

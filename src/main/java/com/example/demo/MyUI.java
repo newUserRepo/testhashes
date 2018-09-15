@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.layout.Main;
 import com.example.demo.layout.MainLayout;
 import com.example.demo.util.Hora;
+import com.example.demo.util.event.MyEventBus;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Viewport;
@@ -21,6 +22,8 @@ public class MyUI extends UI  {
 
     private Hora hora;
 
+    private final MyEventBus myEventBus = new MyEventBus();
+
     public MyUI(final Hora hora) {
         this.hora = hora;
     }
@@ -31,4 +34,7 @@ public class MyUI extends UI  {
 
     }
 
+    public static MyEventBus getEventBusUI() {
+        return ((MyUI) getCurrent()).myEventBus;
+    }
 }

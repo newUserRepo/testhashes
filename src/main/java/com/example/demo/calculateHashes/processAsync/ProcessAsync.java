@@ -1,5 +1,6 @@
 package com.example.demo.calculateHashes.processAsync;
 
+import com.example.demo.MyUI;
 import com.example.demo.calculateHashes.HashesTypes;
 import com.example.demo.calculateHashes.createGridTransactions.GridLogic;
 import com.example.demo.util.TimeCount;
@@ -9,6 +10,7 @@ import java.nio.file.Path;
 
 public final class ProcessAsync {
 
+    private final MyUI ui;
     private final Path path;
     private final ProgressBar bar;
     private final RichTextArea richTextArea;
@@ -22,6 +24,7 @@ public final class ProcessAsync {
         this.richTextArea = builder.richTextArea;
         this.timeCount = builder.timeCount;
         this.gridLogic = builder.gridLogic;
+        this.ui = builder.ui;
         if(builder.hashesTypes == null) {
             throw new RuntimeException("Hashes it`s required");
         }
@@ -49,6 +52,9 @@ public final class ProcessAsync {
     public GridLogic getGridLogic() {
         return gridLogic;
     }
+    public MyUI getUI() {
+        return ui;
+    }
 
     @Override
     public String toString() {
@@ -68,6 +74,7 @@ public final class ProcessAsync {
         private HashesTypes hashesTypes;
         private TimeCount timeCount;
         private GridLogic gridLogic;
+        private MyUI ui;
 
         public Builder setPath(final Path path) {
             this.path = path;
@@ -91,6 +98,10 @@ public final class ProcessAsync {
         }
         public Builder setGridLogic(final GridLogic gridLogic) {
             this.gridLogic = gridLogic;
+            return this;
+        }
+        public Builder setUI(final MyUI ui) {
+            this.ui = ui;
             return this;
         }
         public ProcessAsync build() {
