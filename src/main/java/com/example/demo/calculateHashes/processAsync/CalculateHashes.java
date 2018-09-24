@@ -30,7 +30,7 @@ public class CalculateHashes implements View {
                 final byte[] bytes = new byte[1024];
                 int bytesRead = 0;
                 long sum = 0;
-                long length = process.getPath().toFile().length();
+                long length = Files.size(process.getPath());
 
                 while ((bytesRead = in.read(bytes)) != -1) {
                     haval.update(bytes, 0, bytesRead);
@@ -70,7 +70,7 @@ public class CalculateHashes implements View {
                 process.getTimeCount().init();
                 int dataRead = 0;
                 long sum = 0L;
-                long length = process.getPath().toFile().length();
+                long length = Files.size(process.getPath());
                 final byte[] bytes = new byte[1024];
                 while ((dataRead = in.read(bytes)) != -1) {
                     crc32.update(bytes, 0, dataRead);
@@ -115,7 +115,7 @@ public class CalculateHashes implements View {
                 process.getTimeCount().init();
                 int dataRead = 0;
                 long sum = 0L;
-                long length = process.getPath().toFile().length();
+                long length = Files.size(process.getPath());
                 final byte[] bytes = new byte[1024];
                 while ((dataRead = in.read(bytes)) != -1) {
                     adler32.update(bytes, 0, dataRead);
@@ -159,7 +159,7 @@ public class CalculateHashes implements View {
                 final MessageDigest messageDigest = MessageDigest.getInstance(md5AndShaList.get(f));
                 int dataRead = 0;
                 long sum = 0L;
-                long length = process.getPath().toFile().length();
+                long length = Files.size(process.getPath());
                 final byte[] bytes = new byte[1024];
 
                 while ((dataRead = input.read(bytes)) != -1) {
@@ -170,8 +170,7 @@ public class CalculateHashes implements View {
                 }
                 final byte[] bytesDigest = messageDigest.digest();
 
-                //FIXME add streams or parallelStreams
-                //parallel task here, for example
+                //Linea de la muerteeeeeeeeeeeeeee
                 IntStream.range(0, bytesDigest.length)
                         .boxed()
                         .forEach(c -> sb.append(Integer.toString((bytesDigest[c] & 255) + 256, 16).substring(1)));

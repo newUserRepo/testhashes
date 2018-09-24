@@ -12,7 +12,9 @@ import com.vaadin.ui.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributes;
+import java.util.Objects;
 
 public class PathView extends VerticalLayout implements View {
 
@@ -54,6 +56,7 @@ public class PathView extends VerticalLayout implements View {
 
                 readAttibrutes();
             }catch (IOException ex) {
+                Notification.show("No se ecuentra el archivo " + Notification.Type.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         });
@@ -64,6 +67,7 @@ public class PathView extends VerticalLayout implements View {
                 Files.setAttribute(processAsync.getPath(),"dos:hidden", false);
                 readAttibrutes();
             }catch (IOException ex) {
+                Notification.show("No se ecuentra el archivo " + Notification.Type.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         });

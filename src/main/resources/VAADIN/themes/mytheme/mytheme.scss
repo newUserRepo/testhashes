@@ -34,6 +34,20 @@
 @mixin mytheme {
   @include valo;
 
+   @include keyframes(animate-in-scale-up) {
+     0% {
+       @include transform(scale(0));
+     }
+   }
+
+   .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part {
+     @include animation(valo-animate-in-slide-rigth 900ms 900ms backwards );
+   }
+
+   .valo-menu {
+     @include animation(valo-animate-in-fade 900ms 900ms backwards );
+   }
+
    .label-hour {
      padding: 7px 19px 7px 0px !important;
    }

@@ -6,6 +6,7 @@ import com.example.demo.util.ShowData;
 import com.example.demo.util.event.MyEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.navigator.View;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -18,15 +19,15 @@ import java.nio.file.attribute.DosFileAttributes;
 public class InitialView extends VerticalLayout implements View {
 
     private MyUI ui;
-    private Label label = new Label("Fucking Initial View");
+    private Label label = new Label();
 
-    public InitialView(final MyUI ui) {
-        this.ui = ui;
+    public InitialView() {
+        //this.ui = ui;
 
         label.addStyleName("bold");
         label.addStyleName("h2");
-
-
+        label.setContentMode(ContentMode.HTML);
+        label.setValue(getPhrase());
         addComponents(label);
 
         MyEventBus.register(this);
@@ -41,5 +42,12 @@ public class InitialView extends VerticalLayout implements View {
         addComponent(new Label("HashProcesados: " + count));
     }
 
+    private String getPhrase() {
+        final StringBuilder sb = new StringBuilder();
+              sb.append("<font size = \"5\" color = \"black\"> fucking")
+                .append("<font size = \"5\" color = \"red\"  > initial")
+                .append("<font size = \"5\" color = \"blue\" > view");
+        return sb.toString();
+    }
 
 }

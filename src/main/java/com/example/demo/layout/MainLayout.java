@@ -10,21 +10,21 @@ import com.example.demo.util.CheckIpExternal;
 import com.example.demo.util.Hora;
 import com.example.demo.util.ShowData;
 import com.example.demo.util.TypesFields;
-import com.example.demo.util.event.MyEventBus;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.vaadin.teemu.switchui.Switch;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@SpringView(name = TypesFields.PROCESS_HASHES)
 public class MainLayout extends VerticalLayout implements View {
 
     private final MyUI ui;
@@ -40,6 +40,7 @@ public class MainLayout extends VerticalLayout implements View {
     private final Button btnInterrupt = new Button();
     private CheckBoxGroup<String> checkBoxGroup = new CheckBoxGroup<String>();
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
+
     private Hora hora;
 
     private Label labelHora;
@@ -49,10 +50,9 @@ public class MainLayout extends VerticalLayout implements View {
     private HashesTypes hashesTypes;
     private Switch s = new Switch();
 
-    public MainLayout(final MyUI ui, final Hora hora) {
+    public MainLayout(final MyUI ui , final Hora hora) {
         this.ui = ui;
         this.hora = hora;
-
         setSizeFull();
 
         final Component header = getHeader();
@@ -79,7 +79,7 @@ public class MainLayout extends VerticalLayout implements View {
         new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                     CheckIpExternal.checkIP().whenCompleteAsync((string, error) -> {
                         ui.access(() -> {
                             if (!string.equals("Error")) {

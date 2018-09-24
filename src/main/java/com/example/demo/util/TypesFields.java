@@ -21,6 +21,7 @@ public class TypesFields {
     public static final String MENU_CAPTION = "HashesDemo";
     public static final String PROCESS_HASHES = "hashes";
     public static final String PATH = "path";
+    public static final String CUSTOMER = "customer";
     public static final String ERROR = "https://www.google.com";
     public static final String PATTER_HOUR = "h:mm:ss a";
 

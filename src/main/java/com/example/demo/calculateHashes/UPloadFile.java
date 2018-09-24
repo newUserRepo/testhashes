@@ -51,6 +51,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
         upload.addSucceededListener(this);
         upload.setButtonCaption("...");
 
+
         final Component row_ = getRow();
         addComponents(row_);
     }
@@ -61,6 +62,7 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
 
     public void setEnabledButton(final boolean value) {
         upload.setEnabled(value);
+        upload.focus();
     }
 
     private Component getRow() {

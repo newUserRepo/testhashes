@@ -1627,6 +1627,28 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: top;
 }
 
+.mytheme {
+	@-webkit-keyframes animate-in-scale-up {
+		0% {
+		-webkit-transform: scale(0);
+	}
+	}
+	@-moz-keyframes animate-in-scale-up {
+		0% {
+		-moz-transform: scale(0);
+	}
+	}
+	@keyframes animate-in-scale-up {
+		0% {
+		-webkit-transform: scale(0);
+		-moz-transform: scale(0);
+		-ms-transform: scale(0);
+		-o-transform: scale(0);
+		transform: scale(0);
+	}
+	}
+}
+
 .mytheme.v-app, .mytheme.v-app-loading {
 	font: 300 16px/1.55 "Open Sans", sans-serif;
 	color: #464646;
@@ -15048,6 +15070,18 @@ div.v-layout.v-horizontal.v-widget {
 	display: inline-block;
 	width: 19px;
 	overflow: hidden;
+}
+
+.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part {
+	-webkit-animation: valo-animate-in-slide-rigth 900ms 900ms backwards;
+	-moz-animation: valo-animate-in-slide-rigth 900ms 900ms backwards;
+	animation: valo-animate-in-slide-rigth 900ms 900ms backwards;
+}
+
+.mytheme .valo-menu {
+	-webkit-animation: valo-animate-in-fade 900ms 900ms backwards;
+	-moz-animation: valo-animate-in-fade 900ms 900ms backwards;
+	animation: valo-animate-in-fade 900ms 900ms backwards;
 }
 
 .mytheme .label-hour {
