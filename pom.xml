@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>26.0-jre</version>
         </dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.vaadin.spring.addons/vaadin-spring-addon-i18n -->

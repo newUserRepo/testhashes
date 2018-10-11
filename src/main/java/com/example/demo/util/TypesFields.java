@@ -9,7 +9,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class TypesFields {
+public final class TypesFields {
 
     public static final String HASHES[] = {"ADLER32", "CRC32",   "MD5",
                                            "SHA1"   , "SHA-256", "SHA-384",

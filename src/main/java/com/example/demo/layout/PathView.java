@@ -25,7 +25,8 @@ public class PathView extends VerticalLayout implements View {
     private Label caption = new Label("Atributos");
     private Label labeldata = new Label();
     private final HorizontalLayout row = new HorizontalLayout();
-    final StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
+
 
     public PathView(final MyUI ui) {
         this.ui = ui;

@@ -51,7 +51,7 @@ public class GridLogic extends Grid<Hash> {
 
     public void initData() {
         hashList = new ArrayList<>(GridTransactions.get().findAll());
-        listDataProvider = new ListDataProvider<Hash>(hashList);
+        listDataProvider = new ListDataProvider<>(hashList);
         setDataProvider(listDataProvider);
         listDataProvider.refreshAll();
         //logic to enabled button, only the grid contains items
@@ -61,7 +61,7 @@ public class GridLogic extends Grid<Hash> {
 
     }
 
-    public void deleteItem() {
+    private void deleteItem() {
         button.addClickListener(e -> {
             button.setEnabled(false);
             getSelectedItems().forEach(item -> listDataProvider.getItems().remove(item));
