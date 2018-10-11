@@ -22,9 +22,7 @@ public class CheckIpExternal {
 
     private static String checkIPProcess() {
         String resultIP = "";
-        try {
-            final URL url = new URL(TypesFields.IP_EXTERNAL);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+        try(final BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(TypesFields.IP_EXTERNAL).openStream()))) {
             String s;
             while((s = reader.readLine()) != null) {
                 resultIP = resultIP.concat(s);
