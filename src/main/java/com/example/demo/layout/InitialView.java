@@ -11,11 +11,18 @@ import com.vaadin.ui.VerticalLayout;
 import org.vaadin.easyuploads.MultiFileUpload;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class InitialView extends VerticalLayout implements View {
 
+    private static final String RESOURCES = "src/main/resources/";
     private MyUI ui;
     private Label label = new Label();
+    private Path path;
 
     public InitialView() {
         //this.ui = ui;
@@ -36,7 +43,13 @@ public class InitialView extends VerticalLayout implements View {
         final MultiFileUpload multiFileUpload = new MultiFileUpload() {
             @Override
             protected void handleFile(File tmpFile, String fileName, String mimeType, long length) {
-
+                try {
+                    Files.write(Paths.get(RESOURCES + fileName)
+                                ,Files.readAllBytes(tmpFile.toPath())
+                                ,StandardOpenOption.CREATE);
+                }catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         };
         return multiFileUpload;
