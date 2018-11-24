@@ -1,13 +1,17 @@
 package com.example.demo.layout;
 
 import com.example.demo.MyUI;
+import com.example.demo.calculateHashes.processAsync.ProcessAsync;
+import com.example.demo.calculateHashes.processAsync.ProcessAsyncTask;
 import com.example.demo.util.ShowData;
 import com.example.demo.util.event.MyEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.easyuploads.MultiFileUpload;
 
 import java.io.File;
@@ -16,13 +20,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+@SpringComponent
 public class InitialView extends VerticalLayout implements View {
 
     private static final String RESOURCES = "src/main/resources/";
     private MyUI ui;
     private Label label = new Label();
     private Path path;
+
 
     public InitialView() {
         //this.ui = ui;
@@ -37,6 +46,7 @@ public class InitialView extends VerticalLayout implements View {
         addComponents(label, upload);
         setExpandRatio(upload,1);
         MyEventBus.register(this);
+        processFileAndUploadToS3();
     }
 
     private MultiFileUpload upload() {
@@ -53,6 +63,20 @@ public class InitialView extends VerticalLayout implements View {
             }
         };
         return multiFileUpload;
+    }
+
+    private void processFileAndUploadToS3() {
+        final ProcessAsync processAsync = new ProcessAsync.Builder()
+                .setPath(path)
+                .build();
+        final ProcessAsyncTask task = new ProcessAsyncTask();
+        final ExecutorService es = Executors.newSingleThreadExecutor();
+        final CompletableFuture<Void> cf = CompletableFuture.runAsync(() -> {
+            task.calculateHashAsync(processAsync);
+        },es);
+        cf.whenCompleteAsync((msg,error) -> {
+
+        });
     }
 
     @Subscribe

@@ -7,7 +7,6 @@ import com.example.demo.util.TypesFields;
 import com.vaadin.navigator.View;
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 
