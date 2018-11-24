@@ -37,16 +37,16 @@ public class Main extends SideMenu {
 
         //add view
         navigator.addView("" , new InitialView());
-       /* navigator.addView(TypesFields.PROCESS_HASHES , new MainLayout(ui, hora));
+        navigator.addView(TypesFields.PROCESS_HASHES , new MainLayout(ui, hora));
         navigator.addView(TypesFields.PATH , new PathView(ui));
-        navigator.addView("Customer" , CustomerUI.class);*/
+        navigator.addView("Customer" , CustomerUI.class);
         navigator.navigateTo("");
 
         setMenuCaption(TypesFields.MENU_CAPTION);
         addNavigation("Initial View", "");
-       /* addNavigation("Process-Hashes", VaadinIcons.HAMMER, TypesFields.PROCESS_HASHES);
+        addNavigation("Process-Hashes", VaadinIcons.HAMMER, TypesFields.PROCESS_HASHES);
         addNavigation("Path" , VaadinIcons.FOLDER , TypesFields.PATH);
-        addNavigation("Customer" , VaadinIcons.USER , "customer");*/
+        addNavigation("Customer" , VaadinIcons.USER , "customer");
 
 
     }

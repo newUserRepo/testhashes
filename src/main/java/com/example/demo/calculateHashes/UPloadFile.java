@@ -9,31 +9,30 @@ import com.example.demo.util.TimeCount;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.vaadin.easyuploads.MultiFileUpload;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class UPloadFile extends VerticalLayout implements Upload.Receiver, Upload.ProgressListener, Upload.SucceededListener {
+public class UPloadFile extends MultiFileUpload {
 
     private final MyUI ui;
     private GridLogic gridLogic;
     private ProgressBar progressBar;
     private final Button btnInterrupt;
     private Path path;
-    private TextField txtPath = new TextField();
     private TimeCount timeCount = new TimeCount();
     private HashesTypes hashesTypes;
-    private Panel panel = new Panel();
-    private Label labelHour = new Label();
-    private Upload upload;
-    private CssLayout row = new CssLayout();
     private final UploadService uploadService;
 
 
@@ -43,17 +42,8 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
         this.progressBar = uploadFileClass.getProgressBar();
         this.btnInterrupt = uploadFileClass.getBtnInterrupt();
         this.gridLogic = uploadFileClass.gridLogic();
-
-        setMargin(false);
-        upload = new Upload(null, this);
-        upload.setEnabled(false);
-        upload.addProgressListener(this);
-        upload.addSucceededListener(this);
-        upload.setButtonCaption("...");
-
-
-        final Component row_ = getRow();
-        addComponents(row_);
+        setWidth("0px");
+        addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     }
 
     public void setHashes(final HashesTypes hashesTypes) {
@@ -61,43 +51,11 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
     }
 
     public void setEnabledButton(final boolean value) {
-        upload.setEnabled(value);
-        upload.focus();
+        setEnabled(value);
+        focus();
     }
 
-    private Component getRow() {
-        row.setWidth("100%");
-        txtPath.setPlaceholder("filename");
-        txtPath.setWidth("100%");
-        row.addComponents(upload, txtPath);
-        row.addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
-        row.addStyleName("css-space-2");
-        return row;
-    }
-
-    @Override
-    public void updateProgress(long readBytes, long contentLength) {
-        final Float percent = (readBytes / (float) contentLength);
-        progressBar.setValue(percent);
-    }
-
-    @Override
-    public OutputStream receiveUpload(String filename, String mimeType) {
-        txtPath.setValue(Paths.get(filename).toAbsolutePath().toString());
-        path = Paths.get(System.getProperty("java.io.tmpdir") + filename);
-        BufferedOutputStream bufferedOutputStream = null;
-        try {
-            bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
-        } catch (Exception ex) {
-            Notification.show("Error al subir archivo", Notification.Type.ERROR_MESSAGE);
-        }
-        return bufferedOutputStream;
-    }
-
-    @Override
-    public void uploadSucceeded(Upload.SucceededEvent event) {
-        progressBar.setValue(0.0f);
-
+    public void createBuilder() {
         final ProcessAsync processAsync = new ProcessAsync.Builder()
                 .setUI(ui)
                 .setPath(path)
@@ -110,8 +68,8 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
         final ProcessAsyncTask processAsyncTask = new ProcessAsyncTask();
 
         run(() -> processAsyncTask.calculateHashAsync(processAsync), "Hash ready!!!");
-
     }
+
 
     private void run(final Runnable run, final String msg) {
         final ExecutorService ex = Executors.newSingleThreadExecutor();
@@ -122,4 +80,18 @@ public class UPloadFile extends VerticalLayout implements Upload.Receiver, Uploa
     }
 
 
+    @Override
+    protected void handleFile(File tmpFile, String fileName, String mimeType, long length) {
+        final String resources = "src/main/resources/" + fileName;
+        try {
+
+            path = Files.write(Paths.get(resources), //write file to resources
+                    Files.readAllBytes(tmpFile.toPath()), // read file from
+                    StandardOpenOption.CREATE);          //option
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        createBuilder();
+    }
 }

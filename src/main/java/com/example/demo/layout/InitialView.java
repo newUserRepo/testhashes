@@ -9,11 +9,14 @@ import com.google.common.eventbus.Subscribe;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import org.atmosphere.config.service.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.easyuploads.MultiFileUpload;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringComponent
+@UIScope
 public class InitialView extends VerticalLayout implements View {
 
     private static final String RESOURCES = "src/main/resources/";
@@ -32,8 +36,8 @@ public class InitialView extends VerticalLayout implements View {
     private Label label = new Label();
     private Path path;
 
-
-    public InitialView() {
+    @PostConstruct
+    public void initialView() {
         //this.ui = ui;
 
         label.addStyleName("bold");

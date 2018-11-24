@@ -18,15 +18,18 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.teemu.switchui.Switch;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@SpringView(name = TypesFields.PROCESS_HASHES)
 @UIScope
+@SpringView(name = TypesFields.PROCESS_HASHES)
 public class MainLayout extends VerticalLayout implements View {
 
     private final MyUI ui;
@@ -219,6 +222,7 @@ public class MainLayout extends VerticalLayout implements View {
                 .setGridLogic(gridLogic)
                 .build();
         up = new UPloadFile(uploadFileClass);
+
         gridLayout.addComponent(up, 1, 0);
 
         gridLayout.addComponent(richTextArea, 1, 1);
